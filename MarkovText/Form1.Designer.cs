@@ -28,12 +28,95 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.txtInputText = new System.Windows.Forms.TextBox();
+			this.btnAnalyzeText = new System.Windows.Forms.Button();
+			this.txtGeneratedText = new System.Windows.Forms.TextBox();
+			this.btnGenerateText = new System.Windows.Forms.Button();
+			this.txtCharsToGenerate = new System.Windows.Forms.TextBox();
+			this.txtCharGroupLength = new System.Windows.Forms.TextBox();
+			this.SuspendLayout();
+			// 
+			// txtInputText
+			// 
+			this.txtInputText.Location = new System.Drawing.Point(13, 13);
+			this.txtInputText.MaxLength = 1048544;
+			this.txtInputText.Multiline = true;
+			this.txtInputText.Name = "txtInputText";
+			this.txtInputText.Size = new System.Drawing.Size(238, 193);
+			this.txtInputText.TabIndex = 0;
+			// 
+			// btnAnalyzeText
+			// 
+			this.btnAnalyzeText.Location = new System.Drawing.Point(176, 238);
+			this.btnAnalyzeText.Name = "btnAnalyzeText";
+			this.btnAnalyzeText.Size = new System.Drawing.Size(75, 23);
+			this.btnAnalyzeText.TabIndex = 1;
+			this.btnAnalyzeText.Text = "Analyze";
+			this.btnAnalyzeText.UseVisualStyleBackColor = true;
+			this.btnAnalyzeText.Click += new System.EventHandler(this.btnAnalyzeText_Click);
+			// 
+			// txtGeneratedText
+			// 
+			this.txtGeneratedText.Location = new System.Drawing.Point(324, 13);
+			this.txtGeneratedText.MaxLength = 1048544;
+			this.txtGeneratedText.Multiline = true;
+			this.txtGeneratedText.Name = "txtGeneratedText";
+			this.txtGeneratedText.Size = new System.Drawing.Size(238, 193);
+			this.txtGeneratedText.TabIndex = 2;
+			// 
+			// btnGenerateText
+			// 
+			this.btnGenerateText.Enabled = false;
+			this.btnGenerateText.Location = new System.Drawing.Point(473, 238);
+			this.btnGenerateText.Name = "btnGenerateText";
+			this.btnGenerateText.Size = new System.Drawing.Size(75, 23);
+			this.btnGenerateText.TabIndex = 3;
+			this.btnGenerateText.Text = "Generate";
+			this.btnGenerateText.UseVisualStyleBackColor = true;
+			this.btnGenerateText.Click += new System.EventHandler(this.btnGenerateText_Click);
+			// 
+			// txtCharsToGenerate
+			// 
+			this.txtCharsToGenerate.Location = new System.Drawing.Point(376, 238);
+			this.txtCharsToGenerate.Name = "txtCharsToGenerate";
+			this.txtCharsToGenerate.Size = new System.Drawing.Size(82, 20);
+			this.txtCharsToGenerate.TabIndex = 4;
+			this.txtCharsToGenerate.Text = "1000";
+			// 
+			// txtCharGroupLength
+			// 
+			this.txtCharGroupLength.Location = new System.Drawing.Point(121, 238);
+			this.txtCharGroupLength.Name = "txtCharGroupLength";
+			this.txtCharGroupLength.Size = new System.Drawing.Size(37, 20);
+			this.txtCharGroupLength.TabIndex = 5;
+			this.txtCharGroupLength.Text = "2";
+			// 
+			// Form1
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.ClientSize = new System.Drawing.Size(624, 273);
+			this.Controls.Add(this.txtCharGroupLength);
+			this.Controls.Add(this.txtCharsToGenerate);
+			this.Controls.Add(this.btnGenerateText);
+			this.Controls.Add(this.txtGeneratedText);
+			this.Controls.Add(this.btnAnalyzeText);
+			this.Controls.Add(this.txtInputText);
+			this.Name = "Form1";
 			this.Text = "Form1";
+			this.ResumeLayout(false);
+			this.PerformLayout();
+
 		}
 
 		#endregion
+
+		private System.Windows.Forms.TextBox txtInputText;
+		private System.Windows.Forms.Button btnAnalyzeText;
+		private System.Windows.Forms.TextBox txtGeneratedText;
+		private System.Windows.Forms.Button btnGenerateText;
+		private System.Windows.Forms.TextBox txtCharsToGenerate;
+		private System.Windows.Forms.TextBox txtCharGroupLength;
 	}
 }
 
