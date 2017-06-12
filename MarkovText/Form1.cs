@@ -15,7 +15,6 @@ namespace MarkovText
 		private Random r = new Random();
 		private Dictionary<string, Dictionary<char, int>> SubstringFollowerCount = new Dictionary<string, Dictionary<char, int>>();
 		private Dictionary<string, Dictionary<double, char>> SubstringProbabilitiesCdf = new Dictionary<string, Dictionary<double, char>>();
-		private int _charGroupLength = 0;
 
 		public Form1()
 		{
@@ -33,27 +32,27 @@ namespace MarkovText
 				return;
 			}
 			
-			if (!int.TryParse(charGroupLengthStr, out _charGroupLength) || _charGroupLength < 2)
+			if (!int.TryParse(charGroupLengthStr, out int charGroupLength) || charGroupLength < 2)
 			{
 				MessageBox.Show("Invalid number of character group length. It must be at least 2.");
 				return;
 			}
 
-			CrateMarkovChain(inputText);
+			CrateMarkovChain(inputText, charGroupLength);
 
 			btnGenerateText.Enabled = true;
 		}
 
-		private void CrateMarkovChain(string inputText)
+		private void CrateMarkovChain(string inputText, int charGroupLength)
 		{
 			SubstringFollowerCount.Clear();
 			SubstringProbabilitiesCdf.Clear();
 			
 			// Count instances of substrings and following letters in text
 			int counter = 0;
-			while (counter + _charGroupLength < inputText.Length)
+			while (counter + charGroupLength < inputText.Length)
 			{
-				var currentSubstring = inputText.Substring(counter, _charGroupLength);
+				var currentSubstring = inputText.Substring(counter, charGroupLength);
 				var lastChar = currentSubstring[currentSubstring.Length - 1];
 				var truncatedSubstring = currentSubstring.Substring(0, currentSubstring.Length - 1);
 
@@ -76,24 +75,22 @@ namespace MarkovText
 			{
 				int totalCount = substrFollowers.Value.Sum(x => x.Value);
 				
-				var tmpList = new List<Tuple<char, double>>();
+				var tmpList = new List<(char Character, double Probability)>();
 				foreach (var sc in substrFollowers.Value)
 				{
-					tmpList.Add(Tuple.Create(sc.Key, (double)sc.Value / totalCount));
+					tmpList.Add((sc.Key, (double)sc.Value / totalCount));
 				}
-				tmpList = tmpList.OrderBy(x => x.Item2).ToList();
+				tmpList = tmpList.OrderBy(x => x.Probability).ToList();
 
-				for (int i = 0; i < tmpList.Count; i++)
+				for (int i = 1; i < tmpList.Count; i++)
 				{
-					if (i > 0)
-					{
-						var currentElement = tmpList.ElementAt(i);
-						tmpList.Insert(i, Tuple.Create(tmpList.ElementAt(i).Item1, tmpList.ElementAt(i).Item2 + tmpList.ElementAt(i - 1).Item2));
-						tmpList.RemoveAt(i + 1);
-					}
-				}
+                    var currentElement = tmpList.ElementAt(i);
+                    var newTuple = (tmpList.ElementAt(i).Character, tmpList.ElementAt(i).Probability + tmpList.ElementAt(i - 1).Probability);
+                    tmpList.Insert(i, newTuple);
+                    tmpList.RemoveAt(i + 1);
+                }
 
-				SubstringProbabilitiesCdf.Add(substrFollowers.Key, tmpList.ToDictionary(x => x.Item2, x => x.Item1));
+				SubstringProbabilitiesCdf.Add(substrFollowers.Key, tmpList.ToDictionary(x => x.Probability, x => x.Character));
 			}
 		}
 
@@ -107,8 +104,7 @@ namespace MarkovText
 
 			string charsToGenStr = txtCharsToGenerate.Text;
 
-			int charsToGen;
-			if (!int.TryParse(charsToGenStr, out charsToGen))
+			if (!int.TryParse(charsToGenStr, out int charsToGen))
 			{
 				MessageBox.Show("Invalid number of characters to generate.");
 			}
@@ -121,7 +117,11 @@ namespace MarkovText
 			for (int i = initialString.Length; i < charsToGen; i++)
 			{
 				var randomValue = r.NextDouble();
-				var newLetter = SubstringProbabilitiesCdf.ContainsKey(currentString) ? SubstringProbabilitiesCdf[currentString].First(x => randomValue < x.Key).Value : ' ';
+                char newLetter = ' ';
+                if (SubstringProbabilitiesCdf.TryGetValue(currentString, out var cdf))
+                {
+                    newLetter = cdf.First(x => randomValue < x.Key).Value;
+                }
 				sb.Append(newLetter);
 				currentString = currentString.Substring(1) + newLetter;
 			}
